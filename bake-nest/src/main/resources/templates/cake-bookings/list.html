@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Cake Bookings Preview | BakeNest</title>
+    <link rel="stylesheet" th:href="@{/css/cake-bookings.css}">
+</head>
+<body>
+<header th:replace="~{cake-bookings/fragments :: navigation}"></header>
+<main class="page">
+    <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">Ideas for your next celebration</p>
+        <h1 id="page-title">My Cake Bookings</h1>
+        <p class="prototype-note"><strong>Demo data only.</strong> These fictional bookings do not belong to your account.</p>
+    </section>
+    <!-- GET links switch the demonstration between fictional records and an empty state. -->
+    <div class="page-actions">
+        <a class="button-link" th:href="@{/cake-bookings/preview}">New Booking</a>
+        <a th:if="${!emptyDemo}" th:href="@{/cake-bookings/preview/bookings(empty=true)}">Demonstrate empty list</a>
+        <a th:if="${emptyDemo}" th:href="@{/cake-bookings/preview/bookings}">Show sample bookings</a>
+    </div>
+    <section th:if="${#lists.isEmpty(bookings)}" class="card empty-state" aria-labelledby="empty-title">
+        <h2 id="empty-title">No cake bookings to show</h2>
+        <p>This is the empty-list demonstration. Start with an idea for your custom cake.</p>
+        <a th:href="@{/cake-bookings/preview}">Preview a new booking</a>
+    </section>
+    <!-- Cards stay readable on narrow screens without a horizontally scrolling table. -->
+    <section th:unless="${#lists.isEmpty(bookings)}" class="booking-grid" aria-label="Fictional sample bookings">
+        <article class="card booking-card" th:each="booking : ${bookings}">
+            <p class="eyebrow" th:text="|Demo booking #${booking.id}|"></p>
+            <h2 th:text="${booking.cakeType}"></h2>
+            <dl>
+                <dt>Required date</dt>
+                <dd><time th:datetime="${booking.requiredDate}" th:text="${booking.requiredDate}"></time></dd>
+                <dt>Example status</dt>
+                <dd><span class="status-badge" th:text="${booking.status}"></span></dd>
+            </dl>
+            <a th:href="@{/cake-bookings/preview/bookings/{id}(id=${booking.id})}"
+               th:attr="aria-label=|View Details for demo booking ${booking.id}|">View Details →</a>
+        </article>
+    </section>
+    <footer class="page-footer">Preview only · No bookings are loaded from or saved to a database.</footer>
+</main>
+</body>
+</html>

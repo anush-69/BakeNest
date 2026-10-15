@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Customer navigation intentionally excludes the separate admin prototype. -->
+<header th:fragment="navigation" class="site-header">
+    <div class="header-inner">
+        <a class="brand" th:href="@{/cake-bookings/preview}">BakeNest<span>Made for your moments</span></a>
+        <nav aria-label="Cake booking navigation">
+            <a th:href="@{/cake-bookings/preview}" th:attr="aria-current=${activePage == 'form' ? 'page' : null}">Custom cake</a>
+            <a th:href="@{/cake-bookings/preview/bookings}" th:attr="aria-current=${activePage == 'bookings' ? 'page' : null}">My bookings</a>
+        </nav>
+    </div>
+</header>
+</body>
+</html>

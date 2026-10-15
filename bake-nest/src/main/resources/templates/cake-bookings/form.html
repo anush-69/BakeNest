@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Custom Cake Booking Preview | BakeNest</title>
+    <link rel="stylesheet" th:href="@{/css/cake-bookings.css}">
+    <script defer th:src="@{/js/cake-bookings.js}"></script>
+</head>
+<body>
+<header th:replace="~{cake-bookings/fragments :: navigation}"></header>
+<main class="page">
+    <!-- Introductory copy makes the prototype boundary visible before entry. -->
+    <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">A little imagination. A special celebration.</p>
+        <h1 id="page-title">Your occasion.<br>Your kind of cake.</h1>
+        <p>Tell us what you have in mind and preview your custom cake request.</p>
+        <p class="prototype-note"><strong>Frontend prototype</strong> · Nothing is sent or saved.</p>
+    </section>
+
+    <div class="content-grid">
+        <section class="card" aria-labelledby="form-title">
+            <h2 id="form-title">Let’s plan your cake</h2>
+            <p class="muted">All fields are required except the cake message and reference image URL.</p>
+            <p id="example-help" class="example-note">Dropdown choices are examples pending agreement.</p>
+            <noscript><p class="notice">Enable JavaScript to use this preview. This form cannot submit a booking.</p></noscript>
+
+            <!-- Disabled until script initialization; no action or submit button is provided. -->
+            <form id="cake-booking-form" onsubmit="return false;">
+                <fieldset id="booking-fields" disabled>
+                    <legend class="sr-only">Custom cake request details</legend>
+                    <div class="field-grid">
+                        <div class="field">
+                            <label for="cake-type">Cake type</label>
+                            <select id="cake-type" required aria-describedby="example-help">
+                                <option value="">Choose an example type</option>
+                                <option>Birthday cake (example)</option>
+                                <option>Celebration cake (example)</option>
+                                <option>Wedding cake (example)</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="cake-size">Cake size</label>
+                            <select id="cake-size" required aria-describedby="example-help">
+                                <option value="">Choose an example size</option>
+                                <option>Small (example)</option>
+                                <option>Medium (example)</option>
+                                <option>Large (example)</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="flavour">Flavour</label>
+                            <select id="flavour" required aria-describedby="example-help">
+                                <option value="">Choose an example flavour</option>
+                                <option>Chocolate (example)</option>
+                                <option>Vanilla (example)</option>
+                                <option>Strawberry (example)</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="required-date">Required date</label>
+                            <input id="required-date" type="date" required aria-describedby="date-help">
+                            <small id="date-help">Availability and notice requirements are not confirmed in this preview.</small>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="design-description">Design description</label>
+                        <textarea id="design-description" rows="4" maxlength="2000" required placeholder="Colours, theme, decorations…" aria-describedby="design-help"></textarea>
+                        <small id="design-help">Up to 2,000 characters.</small>
+                    </div>
+                    <div class="field">
+                        <label for="cake-message">Cake message <span>(optional)</span></label>
+                        <input id="cake-message" type="text" maxlength="255" placeholder="What would you like written on the cake?">
+                    </div>
+                    <div class="field">
+                        <label for="reference-image-url">Reference image URL <span>(optional)</span></label>
+                        <input id="reference-image-url" type="url" maxlength="1000" placeholder="https://example.com/cake.jpg" aria-describedby="image-help">
+                        <small id="image-help">Text reference only. The image will not be loaded or displayed.</small>
+                    </div>
+                    <div class="form-footer">
+                        <p class="muted">Review your idea before any real booking is made.</p>
+                        <button id="preview-request" type="button">Preview Request <span aria-hidden="true">→</span></button>
+                    </div>
+                </fieldset>
+            </form>
+        </section>
+
+        <!-- Preview content is populated as plain text, never as HTML or an image. -->
+        <aside class="card preview-card" aria-labelledby="preview-title">
+            <p class="eyebrow">Your cake, at a glance</p>
+            <h2 id="preview-title" tabindex="-1">Request preview</h2>
+            <p id="preview-placeholder" class="muted">Fill in the form and choose “Preview Request” to review your details here.</p>
+            <div id="preview-content" hidden>
+                <p class="notice" role="status">Preview only — this booking has not been saved.</p>
+                <dl id="preview-details"></dl>
+            </div>
+            <div class="preview-footnote">This preview does not confirm a price, availability, or booking.</div>
+        </aside>
+    </div>
+    <footer class="page-footer">BakeNest · A thoughtful cake starts with your idea.</footer>
+</main>
+</body>
+</html>
