@@ -35,7 +35,7 @@ public class OrderController {
         }
         model.addAttribute("orderForm", form);
         model.addAttribute("products", products);
-        return "orders/create";
+        return "orders/orderCreate";
     }
 
     @PostMapping
@@ -56,13 +56,13 @@ public class OrderController {
             }
         }
         model.addAttribute("products", productService.getAvailableProducts());
-        return "orders/create";
+        return "orders/orderCreate";
     }
 
     @GetMapping("/created")
     public String showConfirmation(Model model) {
         // Confirmation is shown only to the browser that just placed the order.
         if (!model.containsAttribute("orderNumber")) return "redirect:/orders/new";
-        return "orders/created";
+        return "orders/orderConfirmation";
     }
 }
