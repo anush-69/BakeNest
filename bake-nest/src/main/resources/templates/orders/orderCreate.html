@@ -10,6 +10,7 @@
 <body>
 <main>
     <h1>Place your order</h1>
+    <p><a th:href="@{/orders}">My Orders</a></p>
     <form th:action="@{/orders}" th:object="${orderForm}" method="post" id="order-form">
         <div class="errors" role="alert" th:if="${#fields.hasAnyErrors()}">
             <p>Please check your order:</p>
@@ -31,12 +32,11 @@
                 <section>
                     <h2>Payment method</h2>
                     <label class="choice"><input type="radio" th:field="*{paymentMethod}" value="CASH_ON_DELIVERY"> Cash on delivery</label>
-                    <label class="choice"><input type="radio" th:field="*{paymentMethod}" value="CARD_DEMO"> Card payment (demo)</label>
+                    <label class="choice"><input type="radio" th:field="*{paymentMethod}" value="CARD_DEMO"> Card payment</label>
                     <!-- Demo fields have no name attribute, so they are not sent to the server. -->
                     <fieldset id="card-details" hidden disabled>
-                        <legend>Demo card details</legend>
-                        <p>Use the sample values below. No payment is processed. Do not enter a real card.</p>
-                        <label for="card-number">Demo card number</label>
+                        <legend>Card details</legend>
+                        <label for="card-number">Card number</label>
                         <input id="card-number" type="text" value="4111 1111 1111 1111" maxlength="23" autocomplete="off">
                         <div class="two-fields">
                             <div><label for="card-expiry">Expiry date</label><input id="card-expiry" type="text" value="12/29" maxlength="5" autocomplete="off"></div>

@@ -172,4 +172,42 @@ class BakeNestApplicationTests {
         assertEquals(403, post(client, fields).statusCode());
         assertEquals(before, orders.count());
     }
+
+    @Test
+    void guestCanReadOnlyOrdersPlacedInTheSameBrowser() throws Exception {
+        HttpClient guest = browser();
+        HttpClient otherGuest = browser();
+        String emptyList = get(guest, "/orders").body();
+        assertTrue(emptyList.contains("No orders in this browser session yet"));
+
+        Map<String, String> first = checkout(guest);
+        assertEquals(302, post(guest, first).statusCode());
+        Long firstId = orders.findAll().stream()
+                .filter(o -> first.get("customerNote").equals(o.getCustomerNote()))
+                .findFirst().orElseThrow().getId();
+        get(guest, "/orders/created");
+
+        Map<String, String> second = checkout(guest);
+        assertEquals(302, post(guest, second).statusCode());
+        Long secondId = orders.findAll().stream()
+                .filter(o -> second.get("customerNote").equals(o.getCustomerNote()))
+                .findFirst().orElseThrow().getId();
+
+        String list = get(guest, "/orders").body();
+        assertTrue(list.contains("/orders/" + firstId));
+        assertTrue(list.indexOf("/orders/" + secondId) < list.indexOf("/orders/" + firstId));
+
+        HttpResponse<String> details = get(guest, "/orders/" + firstId);
+        assertEquals(200, details.statusCode());
+        assertTrue(details.body().contains("Guest Student"));
+        assertTrue(details.body().contains("12 Bakery Road, Colombo"));
+        assertTrue(details.body().contains("Test Cupcake"));
+        assertTrue(details.body().contains("500.00"));
+        assertTrue(details.body().contains("Update Order (coming soon)"));
+        assertTrue(details.body().contains("Delete Order (coming soon)"));
+
+        assertEquals(404, get(otherGuest, "/orders/" + firstId).statusCode());
+        assertTrue(get(otherGuest, "/orders").body().contains("No orders in this browser session yet"));
+        assertEquals(404, get(guest, "/orders/99999999").statusCode());
+    }
 }

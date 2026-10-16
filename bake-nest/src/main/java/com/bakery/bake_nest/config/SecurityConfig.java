@@ -11,7 +11,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Guests can place orders. Other components still require login.
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/orders/new", "/orders", "/orders/created",
+                .requestMatchers("/orders", "/orders/**",
                         "/css/orders.css", "/js/orders.js", "/error").permitAll()
                 .anyRequest().authenticated());
         http.formLogin(login -> login.permitAll());

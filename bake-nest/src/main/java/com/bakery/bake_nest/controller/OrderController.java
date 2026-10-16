@@ -6,6 +6,8 @@ import com.bakery.bake_nest.model.Product;
 import com.bakery.bake_nest.service.OrderService;
 import com.bakery.bake_nest.service.ProductService;
 import java.util.List;
+import java.util.ArrayList;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,10 +42,14 @@ public class OrderController {
 
     @PostMapping
     public String placeOrder(@ModelAttribute("orderForm") OrderForm form, BindingResult errors,
-                             Model model, RedirectAttributes redirect) {
+                             Model model, RedirectAttributes redirect, HttpSession session) {
         if (!errors.hasErrors()) {
             try {
                 BakeryOrder order = orderService.createOrder(form);
+                // Remember which orders belong to this guest browser.
+                List<Long> orderIds = getGuestOrderIds(session);
+                orderIds.add(order.getId());
+                session.setAttribute("guestOrderIds", orderIds);
                 // Redirect prevents a page refresh from submitting the order again.
                 redirect.addFlashAttribute("orderNumber", order.getId());
                 redirect.addFlashAttribute("total", order.getTotal());
@@ -57,6 +63,24 @@ public class OrderController {
         }
         model.addAttribute("products", productService.getAvailableProducts());
         return "orders/orderCreate";
+    }
+
+    @GetMapping
+    public String showOrders(Model model, HttpSession session) {
+        model.addAttribute("orders", orderService.getOrders(getGuestOrderIds(session)));
+        return "orders/orderList";
+    }
+
+    @GetMapping("/{id}")
+    public String showOrder(@PathVariable Long id, Model model, HttpSession session) {
+        model.addAttribute("order", orderService.getOrder(id, getGuestOrderIds(session)));
+        return "orders/orderDetails";
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Long> getGuestOrderIds(HttpSession session) {
+        List<Long> orderIds = (List<Long>) session.getAttribute("guestOrderIds");
+        return orderIds == null ? new ArrayList<>() : new ArrayList<>(orderIds);
     }
 
     @GetMapping("/created")

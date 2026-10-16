@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Orders</title>
+    <link rel="stylesheet" th:href="@{/css/orders.css}">
+</head>
+<body>
+<main>
+    <h1>My Orders</h1>
+    <p><a th:href="@{/orders/new}">Place a new order</a></p>
+    <p>Orders placed in this browser session are shown here, newest first.</p>
+    <section>
+        <p th:if="${#lists.isEmpty(orders)}">No orders in this browser session yet.</p>
+        <div class="table-scroll" th:unless="${#lists.isEmpty(orders)}">
+            <table>
+                <thead><tr><th>Order number</th><th>Date</th><th>Customer</th><th>Total (LKR)</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <td th:text="${order.id}"></td>
+                    <td th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy HH:mm')}"></td>
+                    <td th:text="${order.customerName}"></td>
+                    <td th:text="${#numbers.formatDecimal(order.total, 1, 2)}"></td>
+                    <td th:text="${order.status}"></td>
+                    <td><a th:href="@{/orders/{id}(id=${order.id})}">View details</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

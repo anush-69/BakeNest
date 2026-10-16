@@ -7,6 +7,9 @@ import com.bakery.bake_nest.model.Product;
 import com.bakery.bake_nest.repository.OrderRepository;
 import com.bakery.bake_nest.repository.ProductRepository;
 import java.util.HashSet;
+import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +87,21 @@ public class OrderService {
         }
         // Cascade saves the items with the order, in the same transaction.
         return orderRepository.save(order);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BakeryOrder> getOrders(List<Long> orderIds) {
+        return orderRepository.findByIdInOrderByOrderDateDescIdDesc(orderIds);
+    }
+
+    @Transactional(readOnly = true)
+    public BakeryOrder getOrder(Long id, List<Long> orderIds) {
+        // An order number alone does not give someone access to delivery details.
+        if (!orderIds.contains(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found");
+        }
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
     }
 
     private void checkText(String value, String label, int maxLength) {

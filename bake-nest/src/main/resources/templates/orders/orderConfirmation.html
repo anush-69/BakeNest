@@ -15,6 +15,8 @@
     <p>Order status: <strong>PENDING</strong></p>
     <p th:if="${paymentMethod == 'CASH_ON_DELIVERY'}">Payment: Cash on delivery - payment pending.</p>
     <p th:if="${paymentMethod == 'CARD_DEMO'}">Payment: Card demo only - no payment has been processed.</p>
+    <p><a th:href="@{/orders/{id}(id=${orderNumber})}">View order details</a></p>
+    <p><a th:href="@{/orders}">My Orders</a></p>
     <a th:href="@{/orders/new}">Place another order</a>
 </main>
 </body>

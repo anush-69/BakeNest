@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Order Details</title>
+    <link rel="stylesheet" th:href="@{/css/orders.css}">
+</head>
+<body>
+<main>
+    <h1>Order #<span th:text="${order.id}"></span></h1>
+    <p><a th:href="@{/orders}">Back to My Orders</a></p>
+    <p>Date: <span th:text="${#temporals.format(order.orderDate, 'dd MMM yyyy HH:mm')}"></span></p>
+    <p>Status: <strong th:text="${order.status}"></strong></p>
+    <div class="checkout">
+        <section>
+            <h2>Delivery details</h2>
+            <p>Customer: <span th:text="${order.customerName}"></span></p>
+            <p>Phone: <span th:text="${order.phone}"></span></p>
+            <p class="address">Address: <span th:text="${order.deliveryAddress}"></span></p>
+            <p th:if="${order.customerNote != null and !#strings.isEmpty(order.customerNote)}">Note: <span th:text="${order.customerNote}"></span></p>
+            <h2>Payment details</h2>
+            <p th:if="${order.paymentMethod == 'CASH_ON_DELIVERY'}">Method: Cash on delivery</p>
+            <p th:if="${order.paymentMethod == 'CARD_DEMO'}">Method: Card demo - no payment processed</p>
+            <p>Status: <span th:text="${order.paymentStatus}"></span></p>
+        </section>
+        <section>
+            <h2>Ordered products</h2>
+            <div class="table-scroll">
+                <table>
+                    <thead><tr><th>Product</th><th>Qty</th><th>Unit price (LKR)</th><th>Subtotal (LKR)</th></tr></thead>
+                    <tbody><tr th:each="item : ${order.items}">
+                        <td th:text="${item.productName}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${#numbers.formatDecimal(item.unitPrice, 1, 2)}"></td>
+                        <td th:text="${#numbers.formatDecimal(item.subtotal, 1, 2)}"></td>
+                    </tr></tbody>
+                </table>
+            </div>
+            <div class="total"><strong>Total</strong><strong>LKR <span th:text="${#numbers.formatDecimal(order.total, 1, 2)}"></span></strong></div>
+        </section>
+    </div>
+    <section>
+        <h2>Order actions</h2>
+        <p>Update and Delete will be added in the next steps.</p>
+        <div class="order-actions">
+            <button type="button" disabled>Update Order</button>
+            <button type="button" disabled>Delete Order</button>
+        </div>
+    </section>
+</main>
+</body>
+</html>
