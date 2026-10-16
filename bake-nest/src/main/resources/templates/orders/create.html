@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Place an order | BakeNest</title>
+    <link rel="stylesheet" th:href="@{/css/orders.css}">
+    <script th:src="@{/js/orders.js}" defer></script>
+</head>
+<body>
+<main>
+    <h1>Place your order</h1>
+    <form th:action="@{/orders}" th:object="${orderForm}" method="post" id="order-form">
+        <div class="errors" role="alert" th:if="${#fields.hasAnyErrors()}">
+            <p>Please check your order:</p>
+            <ul><li th:each="error : ${#fields.allErrors()}" th:text="${error}"></li></ul>
+        </div>
+        <div class="checkout">
+            <div>
+                <section>
+                    <h2>Delivery details</h2>
+                    <label for="customerName">Customer name</label>
+                    <input th:field="*{customerName}" required maxlength="100" autocomplete="name">
+                    <label for="phone">Phone number</label>
+                    <input type="tel" th:field="*{phone}" required maxlength="20" autocomplete="tel">
+                    <label for="deliveryAddress">Delivery address</label>
+                    <textarea th:field="*{deliveryAddress}" required maxlength="500" rows="3" autocomplete="street-address"></textarea>
+                    <label for="customerNote">Order note (optional)</label>
+                    <textarea th:field="*{customerNote}" maxlength="1000" rows="2"></textarea>
+                </section>
+                <section>
+                    <h2>Payment method</h2>
+                    <label class="choice"><input type="radio" th:field="*{paymentMethod}" value="CASH_ON_DELIVERY"> Cash on delivery</label>
+                    <label class="choice"><input type="radio" th:field="*{paymentMethod}" value="CARD_DEMO"> Card payment (demo)</label>
+                    <!-- Demo fields have no name attribute, so they are not sent to the server. -->
+                    <fieldset id="card-details" hidden disabled>
+                        <legend>Demo card details</legend>
+                        <p>Use the sample values below. No payment is processed. Do not enter a real card.</p>
+                        <label for="card-number">Demo card number</label>
+                        <input id="card-number" type="text" value="4111 1111 1111 1111" maxlength="23" autocomplete="off">
+                        <div class="two-fields">
+                            <div><label for="card-expiry">Expiry date</label><input id="card-expiry" type="text" value="12/29" maxlength="5" autocomplete="off"></div>
+                            <div><label for="card-cvv">Security code (CVV)</label><input id="card-cvv" type="password" value="123" maxlength="4" autocomplete="off"></div>
+                        </div>
+                    </fieldset>
+                    <noscript>Card payment is a demo only. The order can still be saved, but no card payment will be processed.</noscript>
+                </section>
+            </div>
+            <section class="summary">
+                <h2>Products and order summary</h2>
+                <p th:if="${#lists.isEmpty(products)}">No products are available. Add products through the product-management component first.</p>
+                <div th:each="product : ${products}" class="product">
+                    <div>
+                        <strong th:text="${product.name}"></strong>
+                        <p>LKR <span th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></span> each</p>
+                    </div>
+                    <th:block th:each="item, row : *{items}" th:if="${item.productId == product.id}">
+                        <input type="hidden" th:field="*{items[__${row.index}__].productId}">
+                        <label>Qty
+                            <input class="quantity" type="number" min="0" max="99" step="1" required
+                                   th:aria-label="|Quantity for ${product.name}|"
+                                   th:attr="data-price=${product.price}"
+                                   th:field="*{items[__${row.index}__].quantity}">
+                        </label>
+                    </th:block>
+                    <p class="line-total">LKR 0.00</p>
+                </div>
+                <p>Set quantity to zero for products you do not want.</p>
+                <div class="total" aria-live="polite"><strong>Total</strong><strong id="order-total">LKR 0.00</strong></div>
+                <p>The final total uses current database prices. No delivery fee is added.</p>
+                <button type="submit" th:disabled="${#lists.isEmpty(products)}">Place Order</button>
+            </section>
+        </div>
+    </form>
+</main>
+</body>
+</html>

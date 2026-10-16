@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Order placed | BakeNest</title>
+    <link rel="stylesheet" th:href="@{/css/orders.css}">
+</head>
+<body>
+<main>
+    <header><strong>BakeNest</strong><span>Order confirmation</span></header>
+    <h1>Your order has been placed</h1>
+    <p>Order number: <strong th:text="${orderNumber}"></strong></p>
+    <p>Total: LKR <strong th:text="${#numbers.formatDecimal(total, 1, 2)}"></strong></p>
+    <p>Order status: <strong>PENDING</strong></p>
+    <p th:if="${paymentMethod == 'CASH_ON_DELIVERY'}">Payment: Cash on delivery - payment pending.</p>
+    <p th:if="${paymentMethod == 'CARD_DEMO'}">Payment: Card demo only - no payment has been processed.</p>
+    <a th:href="@{/orders/new}">Place another order</a>
+</main>
+</body>
+</html>

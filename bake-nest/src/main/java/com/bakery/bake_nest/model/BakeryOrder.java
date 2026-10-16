@@ -14,8 +14,24 @@ public class BakeryOrder {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id")
     private User customer;
+
+    // Guest orders do not need a registered user.
+    @Column(name = "customer_name", length = 100)
+    private String customerName;
+
+    @Column(name = "phone", length = 20)
+    private String phone;
+
+    @Column(name = "delivery_address", length = 500)
+    private String deliveryAddress;
+
+    @Column(name = "payment_method", length = 30)
+    private String paymentMethod;
+
+    @Column(name = "payment_status", length = 30)
+    private String paymentStatus;
 
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate = LocalDateTime.now();
@@ -73,6 +89,30 @@ public class BakeryOrder {
 
     public List<OrderItem> getItems() {
         return items;
+    }
+
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getDeliveryAddress() { return deliveryAddress; }
+    public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+
+    public String getPaymentMethod() { return paymentMethod; }
+    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+
+    public String getPaymentStatus() { return paymentStatus; }
+    public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
+
+    @Transient
+    public java.math.BigDecimal getTotal() {
+        java.math.BigDecimal total = java.math.BigDecimal.ZERO;
+        for (OrderItem item : items) {
+            total = total.add(item.getSubtotal());
+        }
+        return total;
     }
 
     public void addItem(OrderItem item) {
