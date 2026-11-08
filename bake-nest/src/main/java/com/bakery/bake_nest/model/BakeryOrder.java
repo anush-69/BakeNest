@@ -75,6 +75,15 @@ public class BakeryOrder {
         return items;
     }
 
+    // Calculate from saved purchase prices, so later product price changes do not affect history.
+    public java.math.BigDecimal getTotal() {
+        java.math.BigDecimal total = java.math.BigDecimal.ZERO;
+        for (OrderItem item : items) {
+            total = total.add(item.getUnitPrice().multiply(java.math.BigDecimal.valueOf(item.getQuantity())));
+        }
+        return total;
+    }
+
     public void addItem(OrderItem item) {
         items.add(item);
         item.setOrder(this);
