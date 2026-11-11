@@ -51,10 +51,10 @@ export default function Checkout() {
   const [error, setError] = useState(null);
   const [confirmation, setConfirmation] = useState(null);
 
-  // Redirect away if basket is empty
+  // Redirect away if basket is empty — but NOT when order just succeeded (modal is showing)
   useEffect(() => {
-    if (!basket.length) navigate("/cart", { replace: true });
-  }, [basket.length, navigate]);
+    if (!basket.length && !confirmation) navigate("/cart", { replace: true });
+  }, [basket.length, confirmation, navigate]);
 
   const ids = basket.map((item) => item.productId).join(",");
   const products = useResource(async () => {

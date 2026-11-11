@@ -43,13 +43,30 @@ export function Orders({ admin = false }) {
   );
   const [filter, setFilter] = useState("ALL");
   const [search, setSearch] = useState("");
+
+  const term = search.trim().toLowerCase();
+
   const rows = (orders.data || [])
-    .filter(
-      (order) =>
-        (filter === "ALL" || order.status === filter) &&
-        String(order.id).includes(search.trim()),
-    )
+    .filter((order) => {
+      if (filter !== "ALL" && order.status !== filter) return false;
+      if (!term) return true;
+      // Search across: order ID, customer name, phone, city, date
+      return (
+        String(order.id).includes(term) ||
+        (order.customerName || "").toLowerCase().includes(term) ||
+        (order.customerPhone || "").toLowerCase().includes(term) ||
+        (order.deliveryCity || "").toLowerCase().includes(term) ||
+        (order.deliveryAddress || "").toLowerCase().includes(term) ||
+        (order.orderDate
+          ? new Date(order.orderDate)
+              .toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+              .toLowerCase()
+              .includes(term)
+          : false)
+      );
+    })
     .sort((a, b) => b.id - a.id);
+
   return (
     <>
       <PageHeading
@@ -63,8 +80,12 @@ export function Orders({ admin = false }) {
       />
       <div className="table-toolbar">
         <input
-          aria-label="Search by order number"
-          placeholder="Search order number…"
+          aria-label="Search orders"
+          placeholder={
+            admin
+              ? "Search by order #, name, phone or city…"
+              : "Search by order number…"
+          }
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -118,6 +139,7 @@ export function OrdersTable({ orders, admin }) {
             <th>Order</th>
             <th>Placed on</th>
             {admin && <th>Customer</th>}
+            {admin && <th>City</th>}
             <th>Items</th>
             <th>Total</th>
             <th>Status</th>
@@ -133,7 +155,17 @@ export function OrdersTable({ orders, admin }) {
                 <strong>#{String(order.id).padStart(4, "0")}</strong>
               </td>
               <td>{date(order.orderDate)}</td>
-              {admin && <td>Customer #{order.customerId}</td>}
+              {admin && (
+                <td>
+                  {order.customerName || `Customer #${order.customerId}`}
+                  {order.customerPhone && (
+                    <small className="muted" style={{ display: "block" }}>
+                      {order.customerPhone}
+                    </small>
+                  )}
+                </td>
+              )}
+              {admin && <td>{order.deliveryCity || "—"}</td>}
               <td>
                 {order.items.reduce((sum, item) => sum + item.quantity, 0)}
               </td>
