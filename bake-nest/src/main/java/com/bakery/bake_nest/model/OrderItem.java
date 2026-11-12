@@ -36,11 +36,6 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    @Transient
-    public BigDecimal getSubtotal() {
-        return unitPrice.multiply(BigDecimal.valueOf(quantity));
-    }
-
     public Long getId() {
         return id;
     }
