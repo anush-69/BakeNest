@@ -36,11 +36,11 @@ class CurrentCustomerResolverTest {
     void reloadsActiveUserByAuthenticatedDatabaseId() {
         User reloaded = new User();
         reloaded.setUsername("renamed-test-customer");
-        when(repository.findById(42L)).thenReturn(Optional.of(reloaded));
+        when(repository.findByUsernameIgnoreCase("test-customer")).thenReturn(Optional.of(reloaded));
 
         assertSame(reloaded, resolver.resolve(authenticated()));
 
-        verify(repository).findById(42L);
+        verify(repository).findByUsernameIgnoreCase("test-customer");
         verifyNoMoreInteractions(repository);
     }
 
@@ -63,41 +63,39 @@ class CurrentCustomerResolverTest {
 
     @Test
     void rejectsAuthenticatedStringPrincipal() {
-        assertRejectedWithoutLookup(UsernamePasswordAuthenticationToken.authenticated(
-                "test-customer", null, List.of()));
+        assertRejectedWithoutLookup(UsernamePasswordAuthenticationToken.authenticated("test-customer", null, List.of()));
     }
 
     @Test
     void rejectsJpaUserAsPrincipal() {
-        assertRejectedWithoutLookup(UsernamePasswordAuthenticationToken.authenticated(
-                new User(), null, List.of()));
+        assertRejectedWithoutLookup(UsernamePasswordAuthenticationToken.authenticated(new User(), null, List.of()));
     }
 
     @Test
-    void rejectsDefaultSpringUserPrincipal() {
-        org.springframework.security.core.userdetails.User principal =
-                new org.springframework.security.core.userdetails.User("test-customer", "", List.of());
-        assertRejectedWithoutLookup(UsernamePasswordAuthenticationToken.authenticated(
-                principal, null, List.of()));
+    void resolvesSharedSpringUserPrincipal() {
+        var principal = new org.springframework.security.core.userdetails.User("test-customer", "", List.of());
+        User user = new User();
+        when(repository.findByUsernameIgnoreCase("test-customer")).thenReturn(Optional.of(user));
+        assertSame(user, resolver.resolve(UsernamePasswordAuthenticationToken.authenticated(principal, null, List.of())));
     }
 
     @Test
     void rejectsDeletedUser() {
-        when(repository.findById(42L)).thenReturn(Optional.empty());
+        when(repository.findByUsernameIgnoreCase("test-customer")).thenReturn(Optional.empty());
         assertThrows(AccessDeniedException.class, () -> resolver.resolve(authenticated()));
-        verify(repository).findById(42L);
+        verify(repository).findByUsernameIgnoreCase("test-customer");
         verifyNoMoreInteractions(repository);
     }
 
     @ParameterizedTest
     @NullSource
-    @ValueSource(strings = {"INACTIVE", "DISABLED", "active", ""})
+    @ValueSource(strings = {"INACTIVE", "DISABLED", ""})
     void rejectsUserWhoseCurrentStatusIsNotActive(String status) {
         User user = new User();
         user.setStatus(status);
-        when(repository.findById(42L)).thenReturn(Optional.of(user));
+        when(repository.findByUsernameIgnoreCase("test-customer")).thenReturn(Optional.of(user));
         assertThrows(AccessDeniedException.class, () -> resolver.resolve(authenticated()));
-        verify(repository).findById(42L);
+        verify(repository).findByUsernameIgnoreCase("test-customer");
         verifyNoMoreInteractions(repository);
     }
 

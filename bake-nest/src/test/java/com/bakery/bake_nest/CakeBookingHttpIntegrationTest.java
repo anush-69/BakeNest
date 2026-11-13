@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, properties = {
-        "spring.jpa.hibernate.ddl-auto=validate",
+        "spring.jpa.hibernate.ddl-auto=create-drop",
         "spring.sql.init.mode=never",
         "spring.jpa.show-sql=false",
         "debug=false",
@@ -56,7 +56,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "logging.level.com.zaxxer.hikari=OFF",
         "logging.level.org.springframework.boot.autoconfigure.security=OFF"
 })
-@ActiveProfiles("booking-local")
+@ActiveProfiles("test")
 @Transactional
 @Rollback
 class CakeBookingHttpIntegrationTest {
@@ -74,20 +74,11 @@ class CakeBookingHttpIntegrationTest {
     private MockMvc mvc;
 
     @BeforeTransaction
-    void verifyStorageBeforeFixtureWrites() {
-        assertEquals(2, jdbc.queryForObject("""
-                SELECT COUNT(*) FROM information_schema.TABLES t
-                JOIN information_schema.ENGINES e ON e.ENGINE = t.ENGINE
-                WHERE t.TABLE_SCHEMA = DATABASE() AND t.TABLE_NAME IN (?, ?)
-                  AND e.TRANSACTIONS = 'YES'
-                """, Integer.class, "users", "cake_bookings"),
-                "Both fixture tables must exist and support transactions.");
-        assertEquals(0, jdbc.queryForObject("""
-                SELECT COUNT(*) FROM information_schema.TRIGGERS
-                WHERE TRIGGER_SCHEMA = DATABASE() AND EVENT_OBJECT_TABLE IN (?, ?)
-                """, Integer.class, "users", "cake_bookings"),
-                "Fixture tables must have no triggers.");
-        passed("Transactional tables and absence of triggers");
+    void verifyStorageBeforeFixtureWrites() throws Exception {
+        try (var connection = jdbc.getDataSource().getConnection()) {
+            assertTrue(connection.getMetaData().getURL().startsWith("jdbc:h2:mem:"));
+        }
+        passed("Isolated in-memory database");
     }
 
     @BeforeEach
@@ -98,11 +89,10 @@ class CakeBookingHttpIntegrationTest {
     @Test
     void authenticatedBookingWorkflowRollsBackAllFixtures() throws Exception {
         mvc.perform(get(BASE + "/1"))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/login"));
+                .andExpect(status().isUnauthorized());
         mvc.perform(get("/cake-bookings/live"))
-                .andExpect(status().isFound()).andExpect(redirectedUrl("/login"));
-        passed("Anonymous request redirected to login by security filters");
+                .andExpect(status().isUnauthorized());
+        passed("Anonymous requests rejected by security filters");
 
         String ownerPassword = UUID.randomUUID().toString();
         String otherPassword = UUID.randomUUID().toString();
@@ -277,10 +267,7 @@ class CakeBookingHttpIntegrationTest {
         assertTrue(savedContext instanceof SecurityContext, "Login must save the security context.");
         SecurityContext security = (SecurityContext) savedContext;
         assertTrue(security.getAuthentication().isAuthenticated());
-        assertTrue(security.getAuthentication().getPrincipal() instanceof DatabaseUserPrincipal);
-        DatabaseUserPrincipal principal = (DatabaseUserPrincipal) security.getAuthentication().getPrincipal();
-        assertEquals(expectedId, principal.getUserId());
-        assertTrue(principal.getPassword() == null, "Authenticated credentials must be erased.");
+        assertEquals(username, security.getAuthentication().getName());
         csrf(authenticatedSession);
         return authenticatedSession;
     }

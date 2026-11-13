@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+// Legacy fixture only: the application uses AccountUserDetailsService.
 @Profile("booking-local")
 public class DatabaseUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;

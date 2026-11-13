@@ -233,8 +233,8 @@ class CakeBookingControllerTest {
 
     @Test
     void controllerAndAdviceAreProfileScopedAndAdviceTargetsOnlyBookingController() {
-        assertArrayEquals(new String[]{"booking-local"}, CakeBookingController.class.getAnnotation(Profile.class).value());
-        assertArrayEquals(new String[]{"booking-local"}, CakeBookingExceptionHandler.class.getAnnotation(Profile.class).value());
+        assertNull(CakeBookingController.class.getAnnotation(Profile.class));
+        assertNull(CakeBookingExceptionHandler.class.getAnnotation(Profile.class));
         assertArrayEquals(new Class<?>[]{CakeBookingController.class}, CakeBookingExceptionHandler.class
                 .getAnnotation(org.springframework.web.bind.annotation.RestControllerAdvice.class).assignableTypes());
     }

@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import jakarta.servlet.DispatcherType;
 import java.util.regex.Pattern;
 
-@Configuration
+// Legacy fixture only: the application uses the shared SecurityConfig.
 @Profile("booking-local")
 public class BookingLocalSecurityConfig {
     @Bean

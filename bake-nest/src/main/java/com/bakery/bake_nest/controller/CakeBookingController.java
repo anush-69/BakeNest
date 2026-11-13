@@ -6,7 +6,6 @@ import com.bakery.bake_nest.dto.CakeBookingResponse;
 import com.bakery.bake_nest.model.User;
 import com.bakery.bake_nest.security.CurrentCustomerResolver;
 import com.bakery.bake_nest.service.CakeBookingService;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 @RestController
-@Profile("booking-local")
 @RequestMapping("/api/cake-bookings")
 public class CakeBookingController {
     private final CakeBookingService bookingService;

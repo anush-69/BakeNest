@@ -1,4 +1,4 @@
-﻿package com.bakery.bake_nest.repository;
+package com.bakery.bake_nest.repository;
 
 import com.bakery.bake_nest.model.User;
 import org.springframework.data.jpa.repository.EntityGraph;

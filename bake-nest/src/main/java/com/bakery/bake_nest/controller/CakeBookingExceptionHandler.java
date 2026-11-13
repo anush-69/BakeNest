@@ -1,7 +1,6 @@
 package com.bakery.bake_nest.controller;
 
 import com.bakery.bake_nest.dto.CakeBookingApiError;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice(assignableTypes = CakeBookingController.class)
-@Profile("booking-local")
 public class CakeBookingExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<CakeBookingApiError> invalidArgument(IllegalArgumentException exception) {

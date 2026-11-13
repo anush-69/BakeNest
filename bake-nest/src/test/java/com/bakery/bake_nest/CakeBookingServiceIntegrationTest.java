@@ -26,10 +26,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         properties = {
-                "spring.jpa.hibernate.ddl-auto=validate",
+                "spring.jpa.hibernate.ddl-auto=create-drop",
                 "spring.sql.init.mode=never"
         }
 )
+@org.springframework.test.context.ActiveProfiles("test")
 @Transactional
 @Rollback
 class CakeBookingServiceIntegrationTest {
@@ -52,21 +53,11 @@ class CakeBookingServiceIntegrationTest {
     @BeforeTransaction
     void verifyFixtureTablesAreSafeForRollback() {
         // Check storage and triggers before the transaction can write the fixture.
-        Integer transactionalTables = jdbcTemplate.queryForObject("""
-                SELECT COUNT(*) FROM information_schema.TABLES t
-                JOIN information_schema.ENGINES e ON e.ENGINE = t.ENGINE
-                WHERE t.TABLE_SCHEMA = DATABASE()
-                  AND t.TABLE_NAME IN (?, ?) AND e.TRANSACTIONS = 'YES'
-                """, Integer.class, "users", "cake_bookings");
-        assertEquals(2, transactionalTables,
-                "Both fixture tables must use transactional storage engines.");
-        Integer triggers = jdbcTemplate.queryForObject("""
-                SELECT COUNT(*) FROM information_schema.TRIGGERS
-                WHERE TRIGGER_SCHEMA = DATABASE()
-                  AND EVENT_OBJECT_TABLE IN (?, ?)
-                """, Integer.class, "users", "cake_bookings");
-        assertEquals(0, triggers,
-                "Fixture tables must have no triggers before fixture writes.");
+        try (var connection = jdbcTemplate.getDataSource().getConnection()) {
+            assertTrue(connection.getMetaData().getURL().startsWith("jdbc:h2:mem:"));
+        } catch (java.sql.SQLException exception) {
+            throw new IllegalStateException(exception);
+        }
     }
 
     @Test
