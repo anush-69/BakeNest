@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{cake-bookings/live/fragments :: head('My bookings')}"></head>
+<body>
+<header th:replace="~{cake-bookings/live/fragments :: navigation}"></header>
+<main class="page" data-live-page="list" th:attr="data-api=@{/api/cake-bookings},data-base=@{/cake-bookings/live}">
+    <section class="intro"><p class="eyebrow">Your celebrations</p><h1>My bookings</h1>
+        <p>Your newest requests appear first. Cancelled requests remain here for your records.</p></section>
+    <div class="page-actions"><a class="button-link" th:href="@{/cake-bookings/live/new}">Create booking</a></div>
+    <div th:replace="~{cake-bookings/live/fragments :: feedback}"></div>
+    <section id="live-empty" class="card empty-state" hidden><h2>No bookings here yet</h2>
+        <p>Create a cake request, or return to a previous page.</p></section>
+    <section id="live-list" class="booking-grid" aria-label="Your bookings"></section>
+    <nav class="page-actions" aria-label="Booking pages">
+        <button id="live-previous" type="button" disabled>Previous</button>
+        <span id="live-page-summary"></span>
+        <button id="live-next" type="button" disabled>Next</button>
+        <div class="field"><label for="live-size">Bookings per page</label>
+            <select id="live-size"><option>10</option><option>25</option><option>50</option></select></div>
+    </nav>
+</main>
+</body>
+</html>

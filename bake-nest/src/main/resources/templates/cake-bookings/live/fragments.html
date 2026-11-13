@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title + ' | BakeNest'}">BakeNest</title>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <link rel="stylesheet" th:href="@{/css/cake-bookings.css}">
+    <script defer th:src="@{/js/cake-bookings-live.js}"></script>
+</head>
+<body>
+<header th:fragment="navigation" class="site-header">
+    <div class="header-inner">
+        <a class="brand" th:href="@{/cake-bookings/live}">BakeNest<span>Made for your moments</span></a>
+        <nav aria-label="Customer bookings">
+            <a th:href="@{/cake-bookings/live}">My bookings</a>
+            <a th:href="@{/cake-bookings/live/new}">Create booking</a>
+            <form th:action="@{/logout}" method="post"><button type="submit">Sign out</button></form>
+        </nav>
+    </div>
+</header>
+<div th:fragment="feedback">
+    <p id="live-message" class="notice" role="status" aria-live="polite">Loading?</p>
+    <a id="live-login" th:href="@{/login}" hidden>Sign in again</a>
+    <button id="live-retry" type="button" hidden>Reload page</button>
+    <noscript><p class="notice">Enable JavaScript to load and manage your bookings.</p></noscript>
+</div>
+</body>
+</html>

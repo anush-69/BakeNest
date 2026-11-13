@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Cake Booking Preview | BakeNest</title>
+    <link rel="stylesheet" th:href="@{/css/cake-bookings.css}">
+    <script defer th:src="@{/js/cake-bookings-admin.js}"></script>
+</head>
+<body>
+<header th:replace="~{cake-bookings/fragments :: navigation}"></header>
+<main class="page">
+    <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">Admin interface prototype</p>
+        <h1 id="page-title">Cake Booking Management</h1>
+        <p class="prototype-note"><strong>Fictional demo data only.</strong> These are not real customer bookings.</p>
+        <p class="notice">Real admin authorization is not integrated. This page is a frontend preview only.</p>
+    </section>
+
+    <!-- Search and filtering operate on the already rendered sample rows, without requests. -->
+    <section class="card" aria-labelledby="table-title">
+        <h2 id="table-title">Fictional booking table</h2>
+        <div class="field-grid">
+            <div class="field">
+                <label for="booking-search">Search booking ID or cake type</label>
+                <input id="booking-search" type="search" placeholder="For example: 1001 or birthday" disabled>
+            </div>
+            <div class="field">
+                <label for="status-filter">Filter by example status</label>
+                <select id="status-filter" disabled aria-describedby="status-help">
+                    <option value="">All example statuses</option>
+                    <option th:each="booking : ${bookings}" th:value="${booking.status}" th:text="${booking.status}"></option>
+                </select>
+            </div>
+        </div>
+        <p id="status-help" class="example-note">All status choices are examples pending agreement.</p>
+        <p id="result-count" role="status" aria-live="polite"></p>
+        <div class="table-scroll" role="region" aria-label="Fictional booking table" tabindex="0">
+            <table class="admin-table">
+                <caption>Demo bookings — example statuses, no saved changes</caption>
+                <thead><tr>
+                    <th scope="col">Booking ID</th><th scope="col">Cake type</th>
+                    <th scope="col">Required date</th><th scope="col">Example status</th><th scope="col">Actions</th>
+                </tr></thead>
+                <tbody>
+                <tr th:each="booking : ${bookings}" data-booking-row
+                    th:attr="data-id=${booking.id},data-cake-type=${booking.cakeType},data-status=${booking.status}">
+                    <th scope="row" th:text="|#${booking.id}|"></th>
+                    <td th:text="${booking.cakeType}"></td>
+                    <td><time th:datetime="${booking.requiredDate}" th:text="${booking.requiredDate}"></time></td>
+                    <td><span class="status-badge" th:text="${booking.status}"></span></td>
+                    <td class="table-actions">
+                        <a th:href="@{/cake-bookings/preview/bookings/{id}(id=${booking.id})}"
+                           th:attr="aria-label=|View Details for demo booking ${booking.id}|">View Details</a>
+                        <button type="button" data-review-booking th:attr="data-id=${booking.id},aria-label=|Review demo booking ${booking.id}|" disabled>Review</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <p id="no-results" class="notice" hidden>No fictional bookings match. Try another search or status.</p>
+    </section>
+
+    <!-- Review inputs only drive a local message; the form cannot submit to the server. -->
+    <section class="card admin-review" aria-labelledby="review-title">
+        <h2 id="review-title" tabindex="-1">Review a demo booking</h2>
+        <p class="muted">Choose a booking below or use its Review button. Proposed values do not change the table or details page.</p>
+        <noscript><p class="notice">Enable JavaScript to search, filter, and review these examples.</p></noscript>
+        <form id="admin-review-form" onsubmit="return false;">
+            <fieldset id="admin-review-fields" disabled>
+                <legend class="sr-only">Proposed booking review</legend>
+                <div class="field-grid">
+                    <div class="field">
+                        <label for="review-booking">Demo booking</label>
+                        <select id="review-booking" required>
+                            <option value="">Choose a fictional booking</option>
+                            <option th:each="booking : ${bookings}" th:value="${booking.id}"
+                                    th:attr="data-status=${booking.status}" th:text="|#${booking.id} — ${booking.cakeType}|"></option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="proposed-status">Proposed status</label>
+                        <select id="proposed-status" required aria-describedby="review-status-help">
+                            <option value="">Choose an example status</option>
+                            <option>REQUESTED (example)</option>
+                            <option>IN REVIEW (example)</option>
+                            <option>QUOTED (example)</option>
+                            <option>CANCELLED (example)</option>
+                        </select>
+                        <small id="review-status-help">Examples pending agreement; these are not final workflow rules.</small>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="quote-amount">Proposed quote amount <span>(optional)</span></label>
+                    <input id="quote-amount" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]+)?" aria-describedby="quote-help">
+                    <small id="quote-help">If supplied, enter a nonnegative decimal such as 0 or 1250.50, without currency symbols or commas. Currency is pending agreement.</small>
+                </div>
+                <div class="field">
+                    <label for="admin-note">Admin note <span>(optional)</span></label>
+                    <textarea id="admin-note" rows="3" maxlength="1000" aria-describedby="note-help"></textarea>
+                    <small id="note-help">Up to 1,000 characters. Nothing entered here is saved.</small>
+                </div>
+                <div class="form-footer"><button id="update-preview" type="button">Update Preview</button></div>
+            </fieldset>
+        </form>
+        <p id="admin-preview-message" class="notice" role="status" aria-live="polite" hidden></p>
+    </section>
+    <footer class="page-footer">Admin preview only · No booking changes are saved.</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,124 @@
+/* Shared bakery palette, typography, and accessible focus treatment. */
+:root { color-scheme: light; --cream: #fbf6ee; --paper: #fffdf9; --brown: #432b20; --muted: #716052; --line: #dfd0bd; --accent: #805039; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--cream); color: var(--brown); font-family: system-ui, sans-serif; line-height: 1.6; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid #96612e; outline-offset: 4px; }
+[hidden] { display: none !important; }
+.site-header { background: var(--paper); border-bottom: 1px solid var(--line); }
+.header-inner { max-width: 1200px; margin: auto; padding: 22px 28px; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+.brand { font: bold 30px Georgia, serif; text-decoration: none; }
+.brand span { display: block; font: 11px system-ui, sans-serif; letter-spacing: .08em; margin-top: 5px; }
+nav { display: flex; flex-wrap: wrap; gap: 22px; align-items: center; font-size: 14px; }
+nav a { font-weight: 700; text-underline-offset: 7px; }
+.coming-soon { color: var(--muted); }
+.coming-soon small { display: block; font-size: 10px; }
+.page { max-width: 1200px; margin: auto; padding: 48px 28px 20px; }
+.intro { max-width: 720px; margin-bottom: 32px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1, h2 { font-family: Georgia, serif; line-height: 1.15; }
+h1 { font-size: clamp(36px, 5vw, 60px); font-weight: 400; margin: 16px 0; }
+h2 { font-size: 27px; margin: 0 0 14px; }
+.prototype-note { display: inline-block; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+/* Form and preview share a card surface; fields collapse on small screens. */
+.content-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 26px; align-items: start; }
+.card { min-width: 0; padding: 30px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 8px 28px #432b2008; }
+.muted, small { color: var(--muted); }
+.muted { font-size: 14px; }
+.example-note { background: #f6ecdf; padding: 10px 12px; border-radius: 8px; font-size: 13px; }
+fieldset { min-width: 0; padding: 0; margin: 0; border: 0; }
+.field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; }
+.field { margin-top: 20px; }
+label { display: block; margin-bottom: 7px; font-size: 14px; font-weight: 650; }
+label span { font-weight: 400; color: var(--muted); }
+input, select, textarea { display: block; width: 100%; min-height: 46px; padding: 11px 12px; color: var(--brown); background: white; border: 1px solid #b8a28d; border-radius: 8px; font: inherit; font-size: 14px; }
+textarea { resize: vertical; }
+small { display: block; font-size: 12px; margin-top: 6px; }
+.form-footer { border-top: 1px solid var(--line); margin-top: 26px; padding-top: 12px; }
+button { display: inline-flex; align-items: center; justify-content: space-between; gap: 26px; padding: 13px 22px; background: var(--brown); color: white; border: 0; border-radius: 8px; font: inherit; font-weight: 650; cursor: pointer; }
+button:hover { background: var(--accent); }
+button:disabled { cursor: default; opacity: .6; }
+/* Preview values preserve line breaks and cannot overflow the card. */
+.preview-card { border-top: 5px solid var(--accent); }
+.notice { padding: 14px; background: #f3e7d5; border-left: 3px solid var(--accent); border-radius: 5px; font-size: 14px; }
+dl { margin: 24px 0; }
+dt { color: var(--muted); font-size: 12px; margin-top: 18px; font-weight: 600; }
+dd { margin: 3px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; font-size: 15px; }
+.preview-footnote { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 24px; color: var(--muted); font-size: 12px; }
+.page-footer { text-align: center; padding: 34px 0 12px; font-size: 12px; color: var(--muted); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+/* Customer list, details, and navigation reuse the first-stage palette and spacing. */
+nav a[aria-current="page"] { text-decoration-thickness: 3px; }
+.page-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; margin-bottom: 26px; }
+.button-link { display: inline-block; padding: 12px 22px; background: var(--brown); color: white; border-radius: 8px; font-weight: 650; text-decoration: none; }
+.button-link:hover { background: var(--accent); }
+.booking-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 26px; }
+.booking-card h2 { font-size: 24px; }
+.status-badge { display: inline-block; padding: 4px 10px; border: 1px solid var(--line); border-radius: 20px; background: #f6ecdf; font-size: 12px; }
+.empty-state { text-align: center; padding: 48px 24px; }
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 0 24px; }
+.full-width { grid-column: 1 / -1; }
+/* Admin table scrolls within its card on small screens; review reuses the shared form styling. */
+.table-scroll { overflow-x: auto; margin-top: 18px; }
+.admin-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+.admin-table caption { text-align: left; padding-bottom: 12px; color: var(--muted); }
+.admin-table th, .admin-table td { padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.admin-table thead { background: #f6ecdf; }
+.admin-table time { white-space: nowrap; }
+.table-actions { min-width: 140px; }
+.table-actions a { display: block; margin-bottom: 10px; }
+.table-actions button { padding: 8px 14px; font-size: 13px; }
+.admin-review { margin-top: 26px; }
+@media (max-width: 850px) { .header-inner { align-items: start; flex-direction: column; } .content-grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .page { padding: 30px 16px 16px; } .header-inner { padding: 20px 16px; } nav { gap: 14px; } .card { padding: 22px 18px; } .field-grid { grid-template-columns: 1fr; } button { width: 100%; } }
+
+/* Print flows naturally across pages; screen and responsive rules above stay unchanged. */
+@media print {
+    @page { margin: 12mm; }
+    body { background: white; font-size: 10pt; line-height: 1.3; }
+    .header-inner { padding: 0 0 8pt; gap: 8pt; }
+    .brand { font-size: 20pt; }
+    .brand span { font-size: 8pt; }
+    .site-header nav, .page-actions, button, .page-footer { display: none; }
+    /* The decorative footer is omitted so it cannot create a final page by itself. */
+    .page { max-width: none; padding: 10pt 0 0; }
+    .intro { max-width: none; margin-bottom: 12pt; }
+    h1 { font-size: 25pt; margin: 6pt 0; }
+    h2, .booking-card h2 { font-size: 17pt; margin-bottom: 6pt; }
+    p { margin: 6pt 0; }
+    .eyebrow, .muted, .notice, .example-note, input, select, textarea { font-size: 9pt; }
+    small, .preview-footnote { font-size: 8pt; }
+    .prototype-note, .example-note, .notice { padding: 5pt 7pt; }
+    /* Block flow allows long form cards and tables to break rather than overflow a page. */
+    .content-grid, .booking-grid, .detail-grid, .field-grid { display: block; }
+    .card { padding: 10pt; margin-bottom: 10pt; border-radius: 0; box-shadow: none; break-inside: auto; }
+    form, fieldset, .admin-table, .admin-table tbody, .table-scroll { break-inside: auto; }
+    /* Keep compact units together where page space permits, never the whole form. */
+    .booking-card, .field, .detail-grid > div, .form-footer, .notice {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    .field { margin-top: 8pt; }
+    label { margin-bottom: 3pt; font-size: 9pt; break-after: avoid; }
+    input, select, textarea { min-height: 0; padding: 5pt; }
+    small { margin-top: 3pt; }
+    .form-footer { margin-top: 8pt; padding-top: 6pt; }
+    dl { margin: 8pt 0; }
+    dt { margin-top: 7pt; font-size: 8pt; break-after: avoid; }
+    dd { font-size: 10pt; }
+    h1, h2, .eyebrow { break-after: avoid; }
+    p, dd { orphans: 3; widows: 3; }
+    .preview-footnote { padding-top: 6pt; margin-top: 8pt; }
+    .admin-review { margin-top: 10pt; }
+    /* Repeat table headings, keep heading/first row adjacent, and permit later row breaks. */
+    .table-scroll { overflow: visible; margin-top: 8pt; }
+    .admin-table { font-size: 9pt; }
+    .admin-table caption { padding-bottom: 5pt; break-after: avoid; }
+    .admin-table thead { display: table-header-group; break-inside: avoid; break-after: avoid; }
+    .admin-table tbody > tr:first-child { break-before: avoid; }
+    .admin-table tr { page-break-inside: avoid; break-inside: avoid; }
+    .admin-table th, .admin-table td { padding: 6pt; }
+    .table-actions { min-width: 0; }
+    .table-actions a { margin-bottom: 0; }
+    .status-badge { padding: 2pt 5pt; font-size: 8pt; }
+}

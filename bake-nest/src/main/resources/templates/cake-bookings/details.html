@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Booking Details Preview | BakeNest</title>
+    <link rel="stylesheet" th:href="@{/css/cake-bookings.css}">
+    <script defer th:src="@{/js/cake-bookings.js}"></script>
+</head>
+<body>
+<header th:replace="~{cake-bookings/fragments :: navigation}"></header>
+<main class="page">
+    <a th:href="@{/cake-bookings/preview/bookings}">← Back to My Bookings</a>
+    <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">The details of your cake idea</p>
+        <h1 id="page-title" th:text="|Demo booking #${booking.id}|"></h1>
+        <p class="prototype-note"><strong>Fictional demo data.</strong> This is not a real booking or an account record.</p>
+    </section>
+    <div class="content-grid">
+        <!-- Escaped text includes the reference URL without fetching or linking an image. -->
+        <section class="card" aria-labelledby="customization-title">
+            <h2 id="customization-title">Cake customization</h2>
+            <dl class="detail-grid">
+                <div><dt>Cake type</dt><dd th:text="${booking.cakeType}"></dd></div>
+                <div><dt>Cake size</dt><dd th:text="${booking.cakeSize}"></dd></div>
+                <div><dt>Flavour</dt><dd th:text="${booking.flavour}"></dd></div>
+                <div><dt>Required date</dt><dd><time th:datetime="${booking.requiredDate}" th:text="${booking.requiredDate}"></time></dd></div>
+                <div class="full-width"><dt>Design description</dt><dd th:text="${booking.designDescription}"></dd></div>
+                <div class="full-width"><dt>Cake message</dt><dd th:text="${booking.cakeMessage}"></dd></div>
+                <div class="full-width"><dt>Reference image URL</dt><dd th:text="${booking.referenceImageUrl}"></dd></div>
+            </dl>
+            <p class="muted">Reference URLs are text only. No external image is loaded.</p>
+        </section>
+        <aside class="card preview-card" aria-labelledby="summary-title">
+            <h2 id="summary-title">Request summary</h2>
+            <dl>
+                <dt>Example status</dt><dd><span class="status-badge" th:text="${booking.status}"></span></dd>
+                <dt>Estimate</dt><dd>Not calculated</dd>
+                <dt>Quote</dt><dd>Not quoted</dd>
+            </dl>
+            <!-- Cancellation is a browser-only confirmation and message, never a data mutation. -->
+            <p class="muted">Try the cancellation interaction. The demo booking and its status will stay unchanged.</p>
+            <button id="cancel-preview" type="button" disabled>Cancel Preview</button>
+            <p id="cancel-message" class="notice" role="status" aria-live="polite" hidden></p>
+            <noscript><p class="notice">Enable JavaScript to try the cancellation preview.</p></noscript>
+        </aside>
+    </div>
+    <footer class="page-footer">Preview only · No changes are saved.</footer>
+</main>
+</body>
+</html>
