@@ -28,6 +28,14 @@ public class Review {
 
     private String status = "PENDING";
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    private void recordCreatedDate() { createdAt = LocalDateTime.now(); }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+
     @ManyToOne
     @JoinColumn(name = "moderated_by_id")
     private User moderatedBy;
