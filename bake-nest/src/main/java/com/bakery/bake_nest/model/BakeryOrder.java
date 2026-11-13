@@ -15,8 +15,8 @@ public class BakeryOrder {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private User customer;
+    @JoinColumn(name = "customer_id", nullable = false) // Encapsul
+    private User customer; // Hide Complexcity and hide data using private access modifiers
 
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate = LocalDateTime.now();
