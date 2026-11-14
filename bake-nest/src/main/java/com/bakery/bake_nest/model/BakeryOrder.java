@@ -1,6 +1,7 @@
 package com.bakery.bake_nest.model;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +15,8 @@ public class BakeryOrder {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
-    private User customer;
+    @JoinColumn(name = "customer_id", nullable = false) // Encapsul
+    private User customer; // Hide Complexcity and hide data using private access modifiers
 
     @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate = LocalDateTime.now();
@@ -24,6 +25,25 @@ public class BakeryOrder {
 
     @Column(name = "customer_note", length = 1000)
     private String customerNote;
+
+    // Delivery and contact details captured at order time
+    @Column(name = "customer_name", length = 200)
+    private String customerName;
+
+    @Column(name = "customer_phone", length = 20)
+    private String customerPhone;
+
+    @Column(name = "delivery_address", length = 500)
+    private String deliveryAddress;
+
+    @Column(name = "delivery_city", length = 100)
+    private String deliveryCity;
+
+    @Column(name = "payment_method", length = 30)
+    private String paymentMethod;
+
+    @Column(name = "delivery_cost", precision = 10, scale = 2)
+    private BigDecimal deliveryCost = BigDecimal.ZERO;
 
     @OneToMany(
             mappedBy = "order",
@@ -71,17 +91,65 @@ public class BakeryOrder {
         this.customerNote = customerNote;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    public void setCustomerPhone(String customerPhone) {
+        this.customerPhone = customerPhone;
+    }
+
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public String getDeliveryCity() {
+        return deliveryCity;
+    }
+
+    public void setDeliveryCity(String deliveryCity) {
+        this.deliveryCity = deliveryCity;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public BigDecimal getDeliveryCost() {
+        return deliveryCost;
+    }
+
+    public void setDeliveryCost(BigDecimal deliveryCost) {
+        this.deliveryCost = deliveryCost;
+    }
+
     public List<OrderItem> getItems() {
         return items;
     }
 
     // Calculate from saved purchase prices, so later product price changes do not affect history.
-    public java.math.BigDecimal getTotal() {
-        java.math.BigDecimal total = java.math.BigDecimal.ZERO;
+    public BigDecimal getTotal() {
+        BigDecimal subtotal = BigDecimal.ZERO;
         for (OrderItem item : items) {
-            total = total.add(item.getUnitPrice().multiply(java.math.BigDecimal.valueOf(item.getQuantity())));
+            subtotal = subtotal.add(item.getUnitPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
         }
-        return total;
+        return subtotal.add(deliveryCost != null ? deliveryCost : BigDecimal.ZERO);
     }
 
     public void addItem(OrderItem item) {
