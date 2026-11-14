@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{cake-bookings/live/fragments :: head('Booking details')}"></head>
+<body>
+<header th:replace="~{cake-bookings/live/fragments :: navigation}"></header>
+<main class="page" data-live-page="details" th:attr="data-booking-id=${bookingId},data-api=@{/api/cake-bookings},data-base=@{/cake-bookings/live}">
+    <section class="intro"><p class="eyebrow">Your cake request</p><h1>Booking details</h1>
+        <p>Cancellation keeps this booking and its details in your records.</p></section>
+    <div class="page-actions"><a th:href="@{/cake-bookings/live}">Back to my bookings</a></div>
+    <div th:replace="~{cake-bookings/live/fragments :: feedback}"></div>
+    <section id="live-details-card" class="card" hidden>
+        <dl id="live-details" class="detail-grid"></dl>
+        <div class="page-actions"><a id="live-edit" class="button-link" hidden>Edit booking</a>
+            <button id="live-cancel" type="button" hidden>Cancel booking</button></div>
+    </section>
+</main>
+</body>
+</html>

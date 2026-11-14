@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{cake-bookings/live/fragments :: head(${editing ? 'Edit booking' : 'Create booking'})}"></head>
+<body>
+<header th:replace="~{cake-bookings/live/fragments :: navigation}"></header>
+<main class="page" th:attr="data-live-page=${editing ? 'edit' : 'create'},data-booking-id=${bookingId},data-api=@{/api/cake-bookings},data-base=@{/cake-bookings/live}">
+    <section class="intro"><p class="eyebrow">Made for your occasion</p>
+        <h1 th:text="${editing ? 'Edit your request' : 'Plan your cake'}">Plan your cake</h1>
+        <p>Only requested bookings can be edited. Saving replaces every field below; empty optional fields will be cleared.</p></section>
+    <div th:replace="~{cake-bookings/live/fragments :: feedback}"></div>
+    <section class="card">
+        <form id="live-form">
+            <fieldset id="live-fields" disabled>
+                <legend class="sr-only">Cake request</legend>
+                <div class="field-grid">
+                    <div class="field"><label for="live-cakeType">Cake type</label><input id="live-cakeType" name="cakeType" maxlength="255" placeholder="For example, birthday cake"></div>
+                    <div class="field"><label for="live-cakeSize">Cake size</label><input id="live-cakeSize" name="cakeSize" maxlength="255" placeholder="Describe the size you need"></div>
+                    <div class="field"><label for="live-flavour">Flavour</label><input id="live-flavour" name="flavour" maxlength="255"></div>
+                    <div class="field"><label for="live-requiredDate">Required date</label><input id="live-requiredDate" name="requiredDate" type="date" required></div>
+                </div>
+                <div class="field"><label for="live-designDescription">Design description <span>(optional)</span></label><textarea id="live-designDescription" name="designDescription" maxlength="2000" rows="4"></textarea></div>
+                <div class="field"><label for="live-cakeMessage">Cake message <span>(optional)</span></label><input id="live-cakeMessage" name="cakeMessage" maxlength="255"></div>
+                <div class="field"><label for="live-referenceImageUrl">Reference image URL <span>(optional)</span></label>
+                    <input id="live-referenceImageUrl" name="referenceImageUrl" type="url" maxlength="1000" aria-describedby="live-reference-help">
+                    <small id="live-reference-help">A text reference only. Images are never loaded automatically.</small></div>
+                <div class="form-footer page-actions"><button id="live-submit" type="submit" th:text="${editing ? 'Save changes' : 'Create booking'}">Save</button>
+                    <a th:href="@{/cake-bookings/live}">Back to my bookings</a></div>
+            </fieldset>
+        </form>
+        <a id="live-saved-link" hidden>View saved booking</a>
+    </section>
+</main>
+</body>
+</html>

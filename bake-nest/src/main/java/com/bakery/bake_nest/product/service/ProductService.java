@@ -16,10 +16,10 @@ import java.util.List;
 @Service
 @Transactional
 public class ProductService {
-    private final ProductRepository products;
+    private final ProductManagementRepository products;
     private final CategoryRepository categories;
 
-    public ProductService(ProductRepository products, CategoryRepository categories) {
+    public ProductService(ProductManagementRepository products, CategoryRepository categories) {
         this.products = products;
         this.categories = categories;
     }

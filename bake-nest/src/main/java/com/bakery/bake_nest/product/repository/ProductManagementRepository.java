@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductManagementRepository extends JpaRepository<Product, Long> {
     @Query(
             "select p from Product p where p.available = true and (:name is null or lower(p.name)"
                 + " like lower(concat('%', :name, '%'))) and (:categoryId is null or p.category.id"
